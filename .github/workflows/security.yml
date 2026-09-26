@@ -1,10 +1,89 @@
-name: repository-hygiene
-on: [push, pull_request]
+name: Repository Hygiene
+
+on:
+  push:
+  pull_request:
+
 jobs:
   hygiene:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Check for accidental secrets
         run: |
-          ! grep -R -nE '(password|secret|api[_-]?key)\s*[:=]\s*["'"'][^"'"']{8,}' . --exclude-dir=.git --exclude='*.md'
+          python - <<'PY'
+          import os
+          import re
+          import sys
+
+          excluded_dirs = {
+              ".git",
+              ".venv",
+              "venv",
+              "__pycache__",
+              "node_modules",
+          }
+
+          excluded_extensions = {
+              ".md",
+              ".png",
+              ".jpg",
+              ".jpeg",
+              ".gif",
+              ".zip",
+          }
+
+          excluded_files = {
+              ".github/workflows/security.yml",
+          }
+
+          patterns = [
+              re.compile(r'password\s*[:=]\s*[^\s]{8,}', re.I),
+              re.compile(r'secret\s*[:=]\s*[^\s]{8,}', re.I),
+              re.compile(r'api[_-]?key\s*[:=]\s*[^\s]{8,}', re.I),
+              re.compile(r'aws[_-]?secret[_-]?access[_-]?key\s*[:=]\s*[^\s]{8,}', re.I),
+          ]
+
+          findings = []
+
+          for root, dirs, files in os.walk("."):
+              dirs[:] = [d for d in dirs if d not in excluded_dirs]
+
+              for filename in files:
+                  relative_path = os.path.relpath(
+                      os.path.join(root, filename),
+                      "."
+                  ).replace("\\", "/")
+
+                  if relative_path in excluded_files:
+                      continue
+
+                  extension = os.path.splitext(filename)[1].lower()
+
+                  if extension in excluded_extensions:
+                      continue
+
+                  path = os.path.join(root, filename)
+
+                  try:
+                      with open(path, "r", encoding="utf-8", errors="ignore") as f:
+                          content = f.read()
+                  except Exception:
+                      continue
+
+                  for pattern in patterns:
+                      if pattern.search(content):
+                          findings.append(relative_path)
+                          break
+
+          if findings:
+              print("Potential hard-coded secrets detected:")
+              for item in sorted(set(findings)):
+                  print(f" - {item}")
+              sys.exit(1)
+
+          print("No obvious hard-coded secrets detected.")
+          PY
