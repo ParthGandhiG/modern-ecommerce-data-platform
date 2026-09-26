@@ -1,0 +1,11 @@
+name: modern_ecommerce
+dbt-version: '>=1.8.0'
+profile: modern_ecommerce
+model-paths: ['models']
+test-paths: ['tests']
+snapshot-paths: ['snapshots']
+models:
+  modern_ecommerce:
+    staging: {+materialized: view}
+    intermediate: {+materialized: table}
+    marts: {+materialized: table}

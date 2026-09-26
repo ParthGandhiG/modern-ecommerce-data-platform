@@ -1,0 +1,1 @@
+{"name":"orders","version":2,"fields":["order_id","customer_id","product_id","quantity","unit_price","currency","status","order_ts"]}

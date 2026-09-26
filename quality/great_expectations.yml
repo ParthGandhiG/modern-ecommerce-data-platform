@@ -1,0 +1,14 @@
+# Great Expectations-style expectation contract. In a live GX project, map these to Expectation Suites.
+expectations:
+  - column: order_id
+    expectation: expect_column_values_to_not_be_null
+  - column: order_id
+    expectation: expect_column_values_to_be_unique
+  - column: quantity
+    expectation: expect_column_values_to_be_greater_than
+    value: 0
+  - column: status
+    expectation: expect_column_values_to_be_in_set
+    value_set: [completed, cancelled, returned]
+  - column: customer_id
+    expectation: expect_column_values_to_not_be_null

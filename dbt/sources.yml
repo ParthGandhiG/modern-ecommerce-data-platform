@@ -1,0 +1,10 @@
+version: 2
+sources:
+  - name: raw
+    schema: raw
+    tables:
+      - name: orders
+        loaded_at_field: order_ts
+        freshness: {warn_after: {count: 1, period: day}, error_after: {count: 2, period: day}}
+      - name: customers
+      - name: products
