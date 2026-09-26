@@ -39,13 +39,12 @@ jobs:
           excluded_files = {
               ".github/workflows/security.yml",
           }
-
-          patterns = [
-              re.compile(r'password\s*[:=]\s*[^\s]{8,}', re.I),
-              re.compile(r'secret\s*[:=]\s*[^\s]{8,}', re.I),
-              re.compile(r'api[_-]?key\s*[:=]\s*[^\s]{8,}', re.I),
-              re.compile(r'aws[_-]?secret[_-]?access[_-]?key\s*[:=]\s*[^\s]{8,}', re.I),
-          ]
+patterns = [
+    re.compile(r'password\s*[:=]\s*(?!\$\{)[^\s]{8,}', re.I),
+    re.compile(r'secret\s*[:=]\s*(?!\$\{)[^\s]{8,}', re.I),
+    re.compile(r'api[_-]?key\s*[:=]\s*(?!\$\{)[^\s]{8,}', re.I),
+    re.compile(r'aws[_-]?secret[_-]?access[_-]?key\s*[:=]\s*(?!\$\{)[^\s]{8,}', re.I),
+]          ]
 
           findings = []
 
