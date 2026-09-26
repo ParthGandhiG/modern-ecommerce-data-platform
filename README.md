@@ -131,17 +131,3 @@ The design keeps event timestamps separate from ingestion timestamps. Watermarks
 | dbt | dbt Cloud/Core | dbt Cloud/Core |
 | Kafka | Confluent/Azure Event Hubs pattern | MSK/Pub/Sub |
 | Gold SQL | Snowflake / Synapse | BigQuery/Redshift |
-
-## What to say in an interview
-
-**Challenge:** Build a reliable analytics platform from heterogeneous commerce sources.
-
-**Approach:** Designed a medallion lakehouse with batch + streaming ingestion, incremental processing, SCD2 dimensions, quality gates, orchestration and warehouse-ready marts.
-
-**Reliability:** Added idempotent processing, retries, schema contracts, data quality validation and failure logging.
-
-**Scale discussion:** Partition Delta data by event/order date, optimize Spark shuffles, use incremental dbt models, cluster warehouse tables on high-selectivity analytical dimensions and monitor freshness/volume anomalies.
-
-## Important honesty rule
-
-The metrics shown in this portfolio are synthetic/demo measurements. Do not present them as production company metrics. When interviewing, describe the architecture and trade-offs you implemented in this repository and distinguish it from your professional production experience.
